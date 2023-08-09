@@ -1,70 +1,83 @@
 local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
+    local fn = vim.fn
+    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+        fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+        vim.cmd [[packadd packer.nvim]]
+        return true
+    end
+    return false
 end
 
 local packer_bootstrap = ensure_packer()
 
 return require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-  use {
-	  'nvim-telescope/telescope.nvim', tag = '0.1.1',
-	  -- or                            , branch = '0.1.x',
-	  requires = { {'nvim-lua/plenary.nvim'} }
-  }
-  use( 'nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
-  use 'thePrimeagen/harpoon'
-  use 'mbbill/undotree'
-  use 'tpope/vim-fugitive'
-  use {
-      'VonHeikemen/lsp-zero.nvim',
-      branch = 'v2.x',
-      requires = {
-          -- LSP Support
-          {'neovim/nvim-lspconfig'},             -- Required
-          {                                      -- Optional
-          'williamboman/mason.nvim',
-          run = function()
-              pcall(vim.cmd, 'MasonUpdate')
-          end,
-      },
-      {'williamboman/mason-lspconfig.nvim'}, -- Optional
+    use 'wbthomason/packer.nvim'
+    use 'nvim-lua/plenary.nvim' -- lua function that many plugins use
+    use 'bluz71/vim-nightfly-guicolors'
+    use 'christoomey/vim-tmux-navigator' -- tmux & split window navigation
+    use 'numToStr/Comment.nvim'
+    use 'nvim-tree/nvim-tree.lua' -- file explorer
+    use 'kyazdani42/nvim-web-devicons' -- icons
+    use 'nvim-lualine/lualine.nvim' -- status line
 
-      -- Autocompletion
-      {'hrsh7th/nvim-cmp'},     -- Required
-      {'hrsh7th/cmp-nvim-lsp'}, -- Required
-      {'L3MON4D3/LuaSnip'},     -- Required
-  }
-}
-  use 'rcarriga/nvim-notify'
-  -- Icons and theme 
-  use { "catppuccin/nvim", as = "catppuccin" }
-  use 'nvim-tree/nvim-web-devicons'
-  use {
-      'nvim-lualine/lualine.nvim',
-      requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-  }
-  use 'sainnhe/everforest'
-  use {
-      'nvim-tree/nvim-tree.lua',
-      requires = {
-          'nvim-tree/nvim-web-devicons', -- optional
-      },
-  }
+    -- fuzzy finding w/ telescope
+    use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
+    use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" }) -- fuzzy finder
 
-  -- Auto Complete
-  use 'onsails/lspkind-nvim' --vscode-like
-  use 'hrsh7th/cmp-buffer' -- nvim-cmp source for buffer words
-  use 'nvim-tree/nvim-web-devicons' -- OPTIONAL: for file icons
-  use 'lewis6991/gitsigns.nvim'  -- OPTIONAL: for git status
-  use 'romgrk/barbar.nvim'
-  if packer_bootstrap then
-    require('packer').sync()
-  end
+    -- autocompletion
+    use("hrsh7th/nvim-cmp") -- completion plugin
+    use("hrsh7th/cmp-buffer") -- source for text in buffer
+    use("hrsh7th/cmp-path") -- source for file system paths
+
+    -- snippets
+    use("L3MON4D3/LuaSnip") -- snippet engine
+    use("saadparwaiz1/cmp_luasnip") -- for autocompletion
+    use("rafamadriz/friendly-snippets") -- useful snippets
+
+
+    -- managing & installing lsp servers, linters & formatters
+    use("williamboman/mason.nvim") -- in charge of managing lsp servers, linters & formatters
+    use("williamboman/mason-lspconfig.nvim") -- bridges gap b/w mason & lspconfig
+
+    -- configuring lsp servers
+    use("neovim/nvim-lspconfig") -- easily configure language servers
+
+    use("hrsh7th/cmp-nvim-lsp") -- for autocompletion
+    use({
+        "glepnir/lspsaga.nvim",
+        branch = "main",
+        requires = {
+            { "nvim-tree/nvim-web-devicons" },
+            { "nvim-treesitter/nvim-treesitter" },
+        },
+    }) -- enhanced lsp uis
+    use("jose-elias-alvarez/typescript.nvim") -- additional functionality for typescript server (e.g. rename file & update imports)
+    use("onsails/lspkind.nvim") -- vs-code like icons for autocompletion
+
+    -- formatting & linting
+    use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
+    use("jayp0521/mason-null-ls.nvim") -- bridges gap b/w mason & null-ls
+
+    -- formatting & linting
+    use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
+
+    -- treesitter configuration
+    use({
+        "nvim-treesitter/nvim-treesitter",
+        run = function()
+            local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
+            ts_update()
+        end,
+    })
+
+    -- auto closing
+    use("windwp/nvim-autopairs") -- autoclose parens, brackets, quotes, etc...
+    use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" }) -- autoclose tags
+
+    -- git integration
+    use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
+    if packer_bootstrap then
+        require('packer').sync()
+    end
 end)

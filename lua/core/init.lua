@@ -1,2 +1,4 @@
-require("core.remap")
-require("core.set")
+require("core.options")
+require("core.keymaps")
+require("core.colorscheme")
+require("core.packer")

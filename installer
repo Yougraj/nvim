@@ -1,9 +1,0 @@
-#!/bin/bash
-
-git clone --depth 1 https://github.com/wbthomason/packer.nvim\
- ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-git clone git@github.com:Yougraj/nvim.git $HOME/.config/nvim
-
-echo "Go to ~/.config/nvim/lua/core/packer.lua"
-echo "type :so"
-echo "then type :PackerSync"
