@@ -8,6 +8,8 @@ end
 local formatting = null_ls.builtins.formatting -- to setup formatters
 local diagnostics = null_ls.builtins.diagnostics -- to setup linters
 
+
+
 -- to setup format on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
@@ -46,3 +48,13 @@ null_ls.setup({
     end
   end,
 })
+
+
+-- python
+local opt = {
+    sources = {
+        null_ls.builtins.diagnostics.mypy,
+        null_ls.builtins.diagnostics.ruff,
+    },
+}
+return opt

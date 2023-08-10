@@ -16,6 +16,9 @@ opt.autoindent = true
 -- line wrapping
 opt.wrap = false
 
+-- undo
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- search settings
 opt.ignorecase = true
@@ -43,12 +46,4 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.iskeyword:append("-")
-
-
-
-
-
-
-
-
 

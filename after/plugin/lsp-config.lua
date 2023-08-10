@@ -16,6 +16,8 @@ if not typescript_setup then
 	return
 end
 
+
+
 local keymap = vim.keymap -- for conciseness
 
 local on_attach = function(client, bufnr)
@@ -67,6 +69,12 @@ typescript.setup({
 		capabilities = capabilities,
 		on_attach = on_attach,
 	},
+})
+
+-- configure python server
+lspconfig.pyright.setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
 })
 
 -- configure css server
