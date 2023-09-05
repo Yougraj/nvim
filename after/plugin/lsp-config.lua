@@ -87,7 +87,14 @@ lspconfig["tailwindcss"].setup({
 	on_attach = on_attach,
 })
 
+-- c clanguage server
 lspconfig["clangd"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+-- korlin language server
+lspconfig["kotlin-language-server"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
